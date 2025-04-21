@@ -1,0 +1,341 @@
+﻿/* BiblioApp Estilos Personalizados */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --text-color: #333;
+    --light-text: #f8f9fa;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #c0392b;
+    --info: #2980b9;
+}
+
+body {
+    font-family: 'Nunito', 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f5f5;
+    color: var(--text-color);
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+/* Estilos de la barra de navegación */
+.navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: var(--light-text) !important;
+    font-weight: 600;
+}
+
+.navbar-brand {
+    font-size: 1.6rem;
+}
+
+.navbar-nav .nav-link {
+    position: relative;
+    transition: all 0.2s;
+}
+
+    .navbar-nav .nav-link:hover:after {
+        content: '';
+        position: absolute;
+        width: 70%;
+        height: 2px;
+        background-color: var(--secondary-color);
+        bottom: 5px;
+        left: 15%;
+    }
+
+/* Contenedor principal */
+.container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Encabezados */
+h1, h2, h3, h4 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+h1 {
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* Estilos de formularios */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+    transition: border 0.2s;
+}
+
+    .form-control:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-gray);
+}
+
+/* Estilos de botones */
+.btn {
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+    }
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    color: white;
+}
+
+.btn-info {
+    background-color: var(--info);
+    border-color: var(--info);
+    color: white;
+}
+
+.btn-outline-danger {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+    .btn-outline-danger:hover {
+        background-color: var(--danger);
+        color: white;
+    }
+
+.btn-outline-success {
+    color: var(--success);
+    border-color: var(--success);
+}
+
+    .btn-outline-success:hover {
+        background-color: var(--success);
+        color: white;
+    }
+
+/* Estilos de tablas */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+    .table thead {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+.table-bordered td, .table-bordered th {
+    border: 1px solid #dee2e6;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Formulario de login */
+.login-container {
+    max-width: 450px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+    .login-container h2 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-container .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .login-container button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+    }
+
+/* Página de detalles */
+.detail-header {
+    background-color: var(--light-gray);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+dl.row dt {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Pie de página */
+.footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+    .footer a {
+        color: var(--secondary-color);
+    }
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+
+/* Tarjetas personalizadas para el Dashboard */
+.stats-card {
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stats-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .stats-card .number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+
+.card-books {
+    background-color: #edf7ff;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.card-loans {
+    background-color: #fff8e1;
+    border-left: 4px solid var(--warning);
+}
+
+.card-users {
+    background-color: #e8f5e9;
+    border-left: 4px solid var(--success);
+}
+
+.card-overdue {
+    background-color: #ffebee;
+    border-left: 4px solid var(--danger);
+}
+
+/* Animaciones personalizadas */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Estilos de alertas personalizados */
+.alert {
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    border-color: var(--success);
+    color: #1e8449;
+}
+
+.alert-danger {
+    background-color: #ffebee;
+    border-color: var(--danger);
+    color: #a93226;
+}
+
+.alert-warning {
+    background-color: #fff8e1;
+    border-color: var(--warning);
+    color: #b7950b;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    border-color: var(--info);
+    color: #1a5276;
+}

@@ -1,46 +1,100 @@
 ﻿@model IEnumerable<BiblioApp.Models.LibroModel>
 
 @{
-    ViewData["Title"] = "Lista de Libros";
+    ViewData["Title"] = "Catálogo de Libros";
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Agregar Libro</a>
-    <a asp-action="ExportToPdf" class="btn btn-outline-danger"> a PDF</a>
-    <a asp-action="ExportToExcel" class="btn btn-outline-success">Exportar a Excel</a>
-</p>
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-book me-2"></i>@ViewData["Title"]</h1>
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Agregar Libro
+            </a>
+            <div class="btn-group ms-2">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-file-export me-1"></i> Exportar
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a asp-action="ExportToPdf" class="dropdown-item">
+                            <i class="fas fa-file-pdf me-2 text-danger"></i> Exportar a PDF
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="ExportToExcel" class="dropdown-item">
+                            <i class="fas fa-file-excel me-2 text-success"></i> Exportar a Excel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Editorial</th>
-            <th>ISBN</th>
-            <th>Año</th>
-            <th>Categoría</th>
-            <th>Existencias</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var libro in Model)
-        {
-            <tr>
-                <td>@libro.Titulo</td>
-                <td>@libro.Autor</td>
-                <td>@libro.Editorial</td>
-                <td>@libro.ISBN</td>
-                <td>@libro.Anio</td>
-                <td>@libro.Categoria</td>
-                <td>@libro.Existencias</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@libro.Id" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@libro.Id" class="btn btn-sm btn-danger">Eliminar</a>
-                    <a asp-action="Details" asp-route-id="@libro.Id" class="btn btn-sm btn-info">Detalles</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Editorial</th>
+                    <th>ISBN</th>
+                    <th>Año</th>
+                    <th>Categoría</th>
+                    <th>Existencias</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var libro in Model)
+                {
+                    <tr>
+                        <td>@libro.Titulo</td>
+                        <td>@libro.Autor</td>
+                        <td>@libro.Editorial</td>
+                        <td>@libro.ISBN</td>
+                        <td>@libro.Anio</td>
+                        <td>
+                            <span class="badge bg-info">@libro.Categoria</span>
+                        </td>
+                        <td class="text-center">
+                            @if (libro.Existencias > 0)
+                            {
+                                <span class="badge bg-success">@libro.Existencias</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Sin existencias</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Edit" asp-route-id="@libro.Id" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@libro.Id" class="btn btn-info">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@libro.Id" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Agregar animación fadeIn a las filas de la tabla
+            $('tbody tr').each(function(index) {
+                $(this).css('animation-delay', (index * 0.05) + 's');
+                $(this).addClass('fade-in');
+            });
+        });
+    </script>
+}
