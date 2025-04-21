@@ -1,0 +1,14 @@
+﻿@model BiblioApp.Models.LibroModel
+
+@{
+    ViewData["Title"] = "Editar Libro";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    @Html.Partial("_LibroForm", Model)
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
