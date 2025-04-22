@@ -41,7 +41,7 @@ namespace BiblioApp.Controllers
         // POST: /Libro/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(LibroModel libro)
+        public async Task<IActionResult> Create(Libro libro)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace BiblioApp.Controllers
         // POST: /Libro/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, LibroModel libro)
+        public async Task<IActionResult> Edit(int id, Libro libro)
         {
             if (id != libro.Id)
             {

@@ -15,23 +15,23 @@ namespace BiblioApp.Controllers
             _baseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<IEnumerable<PrestamoModel>> GetAllPrestamosAsync()
+        public async Task<IEnumerable<Prestamo>> GetAllPrestamosAsync()
         {
             var response = await _httpClient.GetAsync(_baseUrl + "/Prestamo");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<PrestamoModel>>(content);
+            return JsonConvert.DeserializeObject<IEnumerable<Prestamo>>(content);
         }
 
-        public async Task<PrestamoModel> GetPrestamoByIdAsync(int id)
+        public async Task<Prestamo> GetPrestamoByIdAsync(int id)
         {
             var response = await _httpClient.GetAsync($"{_baseUrl + "/Prestamo"}/{id}");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<PrestamoModel>(content);
+            return JsonConvert.DeserializeObject<Prestamo>(content);
         } 
 
-        public async Task<PrestamoModel> CreatePrestamoAsync(PrestamoModel prestamo)
+        public async Task<Prestamo> CreatePrestamoAsync(Prestamo prestamo)
         {
             var content = new StringContent(JsonConvert.SerializeObject(prestamo), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(_baseUrl + "/Prestamo", content);
@@ -39,7 +39,7 @@ namespace BiblioApp.Controllers
             return prestamo;
         }
 
-        public async Task<PrestamoModel> UpdatePrestamoAsync(int id, PrestamoModel prestamo)
+        public async Task<Prestamo> UpdatePrestamoAsync(int id, Prestamo prestamo)
         {
             var content = new StringContent(JsonConvert.SerializeObject(prestamo), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl + "/Prestamo"}/{id}", content);

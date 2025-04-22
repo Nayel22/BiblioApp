@@ -15,23 +15,23 @@ namespace BiblioApp.Controllers
             _baseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<IEnumerable<LibroModel>> GetAllLibrosAsync()
+        public async Task<IEnumerable<Libro>> GetAllLibrosAsync()
         {
             var response = await _httpClient.GetAsync(_baseUrl + "/Libro");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<LibroModel>>(content);
+            return JsonConvert.DeserializeObject<IEnumerable<Libro>>(content);
         }
 
-        public async Task<LibroModel> GetLibroByIdAsync(int id)
+        public async Task<Libro> GetLibroByIdAsync(int id)
         {
             var response = await _httpClient.GetAsync($"{_baseUrl + "/Libro"}/{id}");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<LibroModel>(content);
+            return JsonConvert.DeserializeObject<Libro>(content);
         }
 
-        public async Task<LibroModel> CreateLibroAsync(LibroModel libro)
+        public async Task<Libro> CreateLibroAsync(Libro libro)
         {
             var content = new StringContent(JsonConvert.SerializeObject(libro), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(_baseUrl + "/Libro", content);
@@ -39,7 +39,7 @@ namespace BiblioApp.Controllers
             return libro;
         }
 
-        public async Task<LibroModel> UpdateLibroAsync(int id, LibroModel libro)
+        public async Task<Libro> UpdateLibroAsync(int id, Libro libro)
         {
             var content = new StringContent(JsonConvert.SerializeObject(libro), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_baseUrl + "/Libro"}/{id}", content);

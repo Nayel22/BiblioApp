@@ -1,6 +1,6 @@
 ﻿namespace BiblioApp.Models
 {
-    public class PrestamoModel
+    public class Prestamo
     {
         public int Id { get; set; }
         public int IdUsuario { get; set; }
@@ -11,7 +11,7 @@
         public string Estado { get; set; }
 
         // Navigation properties
-        public virtual UsuarioModel Usuario { get; set; }
-        public virtual LibroModel Libro { get; set; }
+        public virtual Usuario Usuario { get; set; }
+        public virtual Libro Libro { get; set; }
     }
 }
