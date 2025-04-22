@@ -1,0 +1,64 @@
+﻿@model IEnumerable<BiblioApp.Models.Prestamo>
+
+@{
+    ViewData["Title"] = "Préstamos";
+}
+
+<h1>Gestión de Préstamos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo Préstamo</a>
+    <a asp-action="ExportToPdf" class="btn btn-outline-danger">Exportar a PDF</a>
+    <a asp-action="ExportToExcel" class="btn btn-outline-success">Exportar a Excel</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Libro</th>
+            <th>Fecha Préstamo</th>
+            <th>Fecha Devolución Esperada</th>
+            <th>Fecha Devolución Real</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var prestamo in Model)
+        {
+            <tr>
+                <td>@prestamo.Id</td>
+                <td>@(prestamo.Usuario?.Nombre + " " + prestamo.Usuario?.Apellido ?? $"ID: {prestamo.IdUsuario}")</td>
+                <td>@(prestamo.Libro?.Titulo ?? $"ID: {prestamo.IdLibro}")</td>
+                <td>@prestamo.FechaPrestamo.ToShortDateString()</td>
+                <td>@prestamo.FechaDevolucionEsperada.ToShortDateString()</td>
+                <td>@(prestamo.FechaDevolucionReal?.ToShortDateString() ?? "Pendiente")</td>
+                <td>
+                    @if (prestamo.Estado == "Pendiente")
+                    {
+                        <span class="badge bg-warning text-dark">Pendiente</span>
+                    }
+                    else if (prestamo.Estado == "Devuelto")
+                    {
+                        <span class="badge bg-success">Devuelto</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@prestamo.Estado</span>
+                    }
+                </td>
+                <td>
+                    @if (prestamo.Estado == "Pendiente")
+                    {
+                        <a asp-action="DevolucionLibro" asp-route-id="@prestamo.Id" class="btn btn-sm btn-success">Registrar Devolución</a>
+                    }
+                    <a asp-action="Edit" asp-route-id="@prestamo.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Details" asp-route-id="@prestamo.Id" class="btn btn-sm btn-info">Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@prestamo.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
