@@ -7,7 +7,7 @@
         public int IdLibro { get; set; }
         public DateTime FechaPrestamo { get; set; }
         public DateTime FechaDevolucionEsperada { get; set; }
-        public DateTime? FechaDevolucionReal { get; set; }
+        public DateTime? FechaDevolucionReal { get; set; } 
         public string Estado { get; set; }
 
         // Navigation properties

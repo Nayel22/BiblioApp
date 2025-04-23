@@ -2,6 +2,8 @@
 using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
+using System.Text;
+using System.Text.Json;
 
 namespace BiblioApp.Controllers
 {
@@ -17,8 +19,8 @@ namespace BiblioApp.Controllers
         // GET: /Libro
         public async Task<IActionResult> Index()
         {
-            var libros = await _libroService.GetAllLibrosAsync();
-            return View(libros);
+            var libro = await _libroService.GetAllLibrosAsync();
+            return View(libro);
         }
 
         // GET: /Libro/Details/5
@@ -99,6 +101,7 @@ namespace BiblioApp.Controllers
             await _libroService.DeleteLibroAsync(id);
             return RedirectToAction(nameof(Index));
         }
+     
 
         public async Task<IActionResult> ExportToPdf()
         {

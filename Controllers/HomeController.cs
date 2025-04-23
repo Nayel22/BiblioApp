@@ -26,13 +26,8 @@ namespace BiblioApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
-            //return View();
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);   
-                }
                 return View();
             }
 
@@ -40,12 +35,16 @@ namespace BiblioApp.Controllers
 
             if (esValido)
             {
+                // Guardar el correo en sesión como ejemplo (mejor que Id = 0)
+                HttpContext.Session.SetString("Usuario", loginViewModel.Correo);
+
                 return RedirectToAction("Index", "Libro");
             }
 
             ModelState.AddModelError(string.Empty, "Correo o clave incorrectos.");
             return View();
         }
+
 
         public IActionResult Privacy()
         {
@@ -57,6 +56,30 @@ namespace BiblioApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         } 
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegistroViewModel registroViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            bool registrado = await _usuarioService.RegistrarUsuarioAsync(registroViewModel);
+
+            if (registrado)
+            {
+                return RedirectToAction("Index"); // o redirige a Login si quieres
+            }
+
+            ModelState.AddModelError(string.Empty, "No se pudo registrar el usuario.");
+            return View();
+        }
 
     }
 }

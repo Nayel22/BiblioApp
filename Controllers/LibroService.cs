@@ -1,5 +1,6 @@
 ﻿using BiblioApp.Models;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace BiblioApp.Controllers
@@ -15,18 +16,25 @@ namespace BiblioApp.Controllers
             _baseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<IEnumerable<Libro>> GetAllLibrosAsync()
+        public async Task<List<Libro>> GetAllLibrosAsync()
         {
-            var response = await _httpClient.GetAsync(_baseUrl + "/Libro");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<Libro>>(content);
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Libro");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error al obtener libros: {error}");
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Libro>>(json);
         }
 
         public async Task<Libro> GetLibroByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl + "/Libro"}/{id}");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Libro/{id}");
             response.EnsureSuccessStatusCode();
+
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Libro>(content);
         }
@@ -34,22 +42,24 @@ namespace BiblioApp.Controllers
         public async Task<Libro> CreateLibroAsync(Libro libro)
         {
             var content = new StringContent(JsonConvert.SerializeObject(libro), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(_baseUrl + "/Libro", content);
+            var response = await _httpClient.PostAsync($"{_baseUrl}/Libro", content);
             response.EnsureSuccessStatusCode();
+
             return libro;
         }
 
         public async Task<Libro> UpdateLibroAsync(int id, Libro libro)
         {
             var content = new StringContent(JsonConvert.SerializeObject(libro), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"{_baseUrl + "/Libro"}/{id}", content);
+            var response = await _httpClient.PutAsync($"{_baseUrl}/Libro/{id}", content);
             response.EnsureSuccessStatusCode();
-            return libro; // ya lo tienes, no necesitas deserializar
+
+            return libro;
         }
 
         public async Task<bool> DeleteLibroAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseUrl + "/Libro"}/{id}");
+            var response = await _httpClient.DeleteAsync($"{_baseUrl}/Libro/{id}");
             return response.IsSuccessStatusCode;
         }
     }

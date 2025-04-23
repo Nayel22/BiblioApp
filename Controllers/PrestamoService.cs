@@ -1,56 +1,48 @@
-﻿using BiblioApp.Models;
+﻿using System.Text;
+using BiblioApp.Models;
 using Newtonsoft.Json;
-using System.Text;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace BiblioApp.Controllers
+public class PrestamoService
 {
-    public class PrestamoService
+    private readonly HttpClient _httpClient;
+    private readonly string _baseUrl;
+
+    public PrestamoService(HttpClient httpClient, IConfiguration configuration)
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _baseUrl;
+        _httpClient = httpClient;
+        _baseUrl = configuration["ApiSettings:BaseUrl"];
+    }
 
-        public PrestamoService(IConfiguration configuration, HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-            _baseUrl = configuration["ApiSettings:BaseUrl"];
-        }
+    public async Task CrearPrestamoAsync(Prestamo prestamo)
+    {
+        var json = JsonConvert.SerializeObject(prestamo);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        public async Task<IEnumerable<Prestamo>> GetAllPrestamosAsync()
-        {
-            var response = await _httpClient.GetAsync(_baseUrl + "/Prestamo");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<Prestamo>>(content);
-        }
+        var response = await _httpClient.PostAsync($"{_baseUrl}/Prestamo", content);
 
-        public async Task<Prestamo> GetPrestamoByIdAsync(int id)
+        if (!response.IsSuccessStatusCode)
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl + "/Prestamo"}/{id}");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Prestamo>(content);
-        } 
-
-        public async Task<Prestamo> CreatePrestamoAsync(Prestamo prestamo)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(prestamo), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(_baseUrl + "/Prestamo", content);
-            response.EnsureSuccessStatusCode();
-            return prestamo;
-        }
-
-        public async Task<Prestamo> UpdatePrestamoAsync(int id, Prestamo prestamo)
-        {
-            var content = new StringContent(JsonConvert.SerializeObject(prestamo), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"{_baseUrl + "/Prestamo"}/{id}", content);
-            response.EnsureSuccessStatusCode();
-            return prestamo;
-        }
-
-        public async Task<bool> DeletePrestamoAsync(int id)
-        {
-            var response = await _httpClient.DeleteAsync($"{_baseUrl + "/Prestamo"}/{id}");
-            return response.IsSuccessStatusCode;
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Error al crear préstamo: {error}");
         }
     }
+
+    public async Task<int> ObtenerIdUsuarioPorCorreoAsync(string correo)
+    {
+        var response = await _httpClient.GetAsync($"{_baseUrl}/Usuario?correo={Uri.EscapeDataString(correo)}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return 0;
+        }
+
+        var content = await response.Content.ReadAsStringAsync();
+        var usuarios = JsonConvert.DeserializeObject<List<Usuario>>(content);
+
+        var usuario = usuarios?.FirstOrDefault();
+        return usuario?.Id ?? 0;
+    }
+
+
 }

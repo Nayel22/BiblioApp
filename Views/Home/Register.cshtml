@@ -1,0 +1,36 @@
+@model BiblioApp.Models.RegistroViewModel
+
+<h2>Registro de Usuario</h2>
+
+<form asp-action="Register" method="post">
+    <div>
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" />
+        <span asp-validation-for="Nombre"></span>
+    </div>
+    <div>
+        <label asp-for="Apellido"></label>
+        <input asp-for="Apellido" />
+        <span asp-validation-for="Apellido"></span>
+    </div>
+    <div>
+        <label asp-for="Correo"></label>
+        <input asp-for="Correo" />
+        <span asp-validation-for="Correo"></span>
+    </div>
+    <div>
+        <label asp-for="Telefono"></label>
+        <input asp-for="Telefono" />
+        <span asp-validation-for="Telefono"></span>
+    </div>
+    <div>
+        <label asp-for="Clave"></label>
+        <input asp-for="Clave" type="password" />
+        <span asp-validation-for="Clave"></span>
+    </div>
+    <button type="submit">Registrarse</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
