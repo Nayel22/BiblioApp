@@ -4,6 +4,7 @@ namespace BiblioApp.Models
 {
     public class LoginViewModel
     {
+        public string TipoUsuario;
         public int Id { get; set; }
         [Required(ErrorMessage = "El correo es obligatorio")]
         [EmailAddress(ErrorMessage = "Debe ser un correo válido")]

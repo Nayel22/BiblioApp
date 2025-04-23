@@ -46,6 +46,18 @@ namespace BiblioApp.Controllers
 
             return response.IsSuccessStatusCode;
         }
+        public async Task<string> ObtenerTipoUsuarioAsync(string correo)
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Usuario/tipo?correo={Uri.EscapeDataString(correo)}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("No se pudo obtener el tipo de usuario.");
+            }
+
+            var tipo = await response.Content.ReadAsStringAsync();
+            return tipo.Trim('"');
+        }
 
 
     }

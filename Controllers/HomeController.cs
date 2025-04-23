@@ -35,9 +35,9 @@ namespace BiblioApp.Controllers
 
             if (esValido)
             {
-                // Guardar el correo en sesión como ejemplo (mejor que Id = 0)
+                var tipoUsuario = await _usuarioService.ObtenerTipoUsuarioAsync(loginViewModel.Correo);
+                HttpContext.Session.SetString("TipoUsuario", tipoUsuario);
                 HttpContext.Session.SetString("Usuario", loginViewModel.Correo);
-
                 return RedirectToAction("Index", "Libro");
             }
 

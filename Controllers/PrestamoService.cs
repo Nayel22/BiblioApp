@@ -86,6 +86,18 @@ public class PrestamoService
         return prestamos ?? new List<Prestamo>();
     }
 
+    public async Task<string> ObtenerTipoUsuarioAsync(string correo)
+    {
+        var response = await _httpClient.GetAsync($"{_baseUrl}/Usuario/tipo?correo={Uri.EscapeDataString(correo)}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("No se pudo obtener el tipo de usuario.");
+        }
+
+        var tipo = await response.Content.ReadAsStringAsync();
+        return tipo.Trim('"');
+    }
 
 
 }

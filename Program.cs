@@ -3,8 +3,6 @@ using BiblioApp.Controllers;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
-// Sesión
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -13,7 +11,6 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// 💡 Registrá HomeService
 builder.Services.AddHttpClient<HomeService>();
 builder.Services.AddScoped<HomeService>();
 
@@ -22,12 +19,16 @@ builder.Services.AddScoped<LibroService>();
 
 builder.Services.AddHttpClient<PrestamoService>();
 builder.Services.AddScoped<PrestamoService>();
+
+builder.Services.AddHttpContextAccessor(); 
+
+
 var app = builder.Build();
 
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseSession(); // no lo olvides
+app.UseSession();
 
 app.UseAuthorization();
 
