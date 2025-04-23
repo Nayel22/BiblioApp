@@ -43,6 +43,49 @@ public class PrestamoService
         var usuario = usuarios?.FirstOrDefault();
         return usuario?.Id ?? 0;
     }
+  
+
+    public async Task<List<Prestamo>> ObtenerPrestamosPendientesAsync(string correo)
+    {
+        var response = await _httpClient.GetAsync($"{_baseUrl}/Prestamo/pendientes?correo={Uri.EscapeDataString(correo)}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Error al obtener préstamos pendientes: {error}");
+        }
+
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<List<Prestamo>>(content);
+    }
+
+    public async Task<bool> MarcarComoDevueltoAsync(int idPrestamo)
+    {
+        var response = await _httpClient.PutAsync($"{_baseUrl}/Prestamo/devolver/{idPrestamo}", null);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Error al devolver préstamo: {error}");
+        }
+
+        return true;
+    }
+    public async Task<List<Prestamo>> ObtenerPrestamosPendientesPorCorreoAsync(string correo)
+    {
+        var response = await _httpClient.GetAsync($"{_baseUrl}/Prestamo/pendientes?correo={Uri.EscapeDataString(correo)}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Error al obtener préstamos pendientes: {error}");
+        }
+
+        var content = await response.Content.ReadAsStringAsync();
+        var prestamos = JsonConvert.DeserializeObject<List<Prestamo>>(content);
+        return prestamos ?? new List<Prestamo>();
+    }
+
 
 
 }

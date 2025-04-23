@@ -1,0 +1,62 @@
+@model List<BiblioApp.Models.Prestamo>
+
+@{
+    ViewData["Title"] = "Préstamos Pendientes";
+}
+
+<h2 class="my-4 text-center">Préstamos Pendientes</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Fecha Préstamo</th>
+        <th>Devolución Esperada</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var prestamo in Model)
+    {
+        <tr>
+            <td>@prestamo.Id</td>
+            <td>@(prestamo.Libro?.Titulo ?? $"ID: {prestamo.IdLibro}")</td>
+            <td>@prestamo.FechaPrestamo.ToShortDateString()</td>
+            <td>@prestamo.FechaDevolucionEsperada.ToShortDateString()</td>
+            <td>
+                <button class="btn btn-sm btn-success devolver-btn" data-id="@prestamo.Id">Devolver</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.devolver-btn').on('click', function () {
+                var id = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("DevolverLibro", "Prestamo")',
+                    type: 'POST',
+                    data: { idPrestamo: id },
+                    success: function () {
+                        alert("Libro devuelto con éxito.");
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        let mensaje = "Error al devolver el libro.";
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            mensaje = xhr.responseJSON.error;
+                        } else if (xhr.responseText) {
+                            mensaje = xhr.responseText;
+                        }
+                        alert(mensaje);
+                    }
+                });
+            });
+        });
+    </script>
+}

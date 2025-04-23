@@ -52,10 +52,33 @@ namespace BiblioApp.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+        
+        public async Task<IActionResult> PrestamosPendientes()
+        {
+            var correoUsuario = HttpContext.Session.GetString("Usuario");
+            if (string.IsNullOrEmpty(correoUsuario))
+                return Unauthorized();
 
+            var prestamos = await _prestamoService.ObtenerPrestamosPendientesPorCorreoAsync(correoUsuario);
+            return View(prestamos);
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> DevolverLibro(int idPrestamo)
+        {
+            try
+            {
+                var exito = await _prestamoService.MarcarComoDevueltoAsync(idPrestamo);
+                if (!exito)
+                    return BadRequest("No se pudo devolver el libro.");
 
-
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         
     }
 }
