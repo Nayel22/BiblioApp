@@ -1,6 +1,8 @@
 ﻿using BiblioApp.Models;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace BiblioApp.Controllers
 {
     public class HomeService
@@ -58,6 +60,22 @@ namespace BiblioApp.Controllers
             var tipo = await response.Content.ReadAsStringAsync();
             return tipo.Trim('"');
         }
+        public async Task<int> ObtenerIdUsuarioPorCorreoAsync(string correo)
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/Usuario/por-correo?correo={Uri.EscapeDataString(correo)}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return 0;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            var usuarios = JsonConvert.DeserializeObject<List<Usuario>>(content);
+
+            var usuario = usuarios?.FirstOrDefault();
+            return usuario?.Id ?? 0;
+        }
+
 
 
     }

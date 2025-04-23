@@ -22,7 +22,6 @@ namespace BiblioApp.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -36,8 +35,15 @@ namespace BiblioApp.Controllers
             if (esValido)
             {
                 var tipoUsuario = await _usuarioService.ObtenerTipoUsuarioAsync(loginViewModel.Correo);
-                HttpContext.Session.SetString("TipoUsuario", tipoUsuario);
+                var idUsuario = await _usuarioService.ObtenerIdUsuarioPorCorreoAsync(loginViewModel.Correo); 
+
+                // Verifica que sea el id correcto
+                Console.WriteLine($"🧾 Login OK - ID de usuario: {idUsuario} ({loginViewModel.Correo})");
+
                 HttpContext.Session.SetString("Usuario", loginViewModel.Correo);
+                HttpContext.Session.SetString("TipoUsuario", tipoUsuario);
+                HttpContext.Session.SetInt32("IdUsuario", idUsuario); 
+
                 return RedirectToAction("Index", "Libro");
             }
 

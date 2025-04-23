@@ -28,21 +28,6 @@ public class PrestamoService
         }
     }
 
-    public async Task<int> ObtenerIdUsuarioPorCorreoAsync(string correo)
-    {
-        var response = await _httpClient.GetAsync($"{_baseUrl}/Usuario?correo={Uri.EscapeDataString(correo)}");
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return 0;
-        }
-
-        var content = await response.Content.ReadAsStringAsync();
-        var usuarios = JsonConvert.DeserializeObject<List<Usuario>>(content);
-
-        var usuario = usuarios?.FirstOrDefault();
-        return usuario?.Id ?? 0;
-    }
   
 
     public async Task<List<Prestamo>> ObtenerPrestamosPendientesAsync(string correo)
@@ -98,6 +83,8 @@ public class PrestamoService
         var tipo = await response.Content.ReadAsStringAsync();
         return tipo.Trim('"');
     }
+
+
 
 
 }

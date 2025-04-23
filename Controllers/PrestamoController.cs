@@ -10,8 +10,9 @@ namespace BiblioApp.Controllers
 {
     public class PrestamoController : Controller
     {
+        
         private readonly PrestamoService _prestamoService;
-
+        
         public PrestamoController(PrestamoService prestamoService)
         {
             _prestamoService = prestamoService;
@@ -19,17 +20,15 @@ namespace BiblioApp.Controllers
         [HttpPost]
         public async Task<IActionResult> GenerarPrestamo(int idLibro, DateTime fechaDevolucionEsperada)
         {
-            var correoUsuario = HttpContext.Session.GetString("Usuario");
-            if (string.IsNullOrEmpty(correoUsuario))
-                return Unauthorized();
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+            Console.WriteLine($"📦 Prestamo generado para usuario ID: {idUsuario}");
 
-            var idUsuario = await _prestamoService.ObtenerIdUsuarioPorCorreoAsync(correoUsuario);
-            if (idUsuario == 0)
-                return NotFound("Usuario no encontrado");
+            if (idUsuario == null || idUsuario == 0)
+                return Unauthorized();
 
             var prestamo = new Prestamo
             {
-                IdUsuario = idUsuario,
+                IdUsuario = idUsuario.Value,
                 IdLibro = idLibro,
                 FechaPrestamo = DateTime.Now,
                 FechaDevolucionEsperada = fechaDevolucionEsperada,
@@ -52,7 +51,7 @@ namespace BiblioApp.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
-        
+
         public async Task<IActionResult> PrestamosPendientes()
         {
             var correoUsuario = HttpContext.Session.GetString("Usuario");
