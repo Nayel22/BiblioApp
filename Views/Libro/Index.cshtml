@@ -17,6 +17,10 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
+                        @{
+                            var imagenRuta = Url.Content("~/Img/" + libro.ImagenURL);
+                        }
+                        <img src="@imagenRuta" class="card-img-top" alt="@libro.Titulo">
                         <h5 class="card-title">@libro.Titulo</h5>
                         <p class="card-text"><strong>Autor:</strong> @libro.Autor</p>
                         <p class="card-text"><strong>Editorial:</strong> @libro.Editorial</p>
@@ -96,4 +100,12 @@
             });
         });
     </script>
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            object-position: center;
+        }
+    </style>
 }
