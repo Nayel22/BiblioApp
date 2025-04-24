@@ -1,0 +1,211 @@
+@model List<BiblioApp.Models.Libro>
+@{
+    ViewData["Title"] = "Gestión de Libros";
+}
+
+<h2>Gestión de Libros</h2>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
+
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCrear">Agregar Libro</button>
+
+<table id="tablaLibros" class="table table-bordered display responsive nowrap" style="width:100%">
+    <thead>
+    <tr>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Editorial</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var libro in Model)
+    {
+        <tr data-id="@libro.Id">
+            <td>@libro.Titulo</td>
+            <td>@libro.Autor</td>
+            <td>@libro.Editorial</td>
+            <td>
+                <button class="btn btn-info btn-sm ver-libro" data-id="@libro.Id">Ver</button>
+                <button class="btn btn-warning btn-sm editar-libro" data-id="@libro.Id">Editar</button>
+                <button class="btn btn-danger btn-sm eliminar-libro" data-id="@libro.Id">Eliminar</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Modal Crear -->
+<div class="modal fade" id="modalCrear" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formCrear">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Libro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label>Título</label><input name="Titulo" class="form-control" /></div>
+                    <div class="mb-2"><label>Autor</label><input name="Autor" class="form-control" /></div>
+                    <div class="mb-2"><label>Editorial</label><input name="Editorial" class="form-control" /></div>
+                    <div class="mb-2"><label>ISBN</label><input name="ISBN" class="form-control" /></div>
+                    <div class="mb-2"><label>Año</label><input name="Anio" type="number" class="form-control" /></div>
+                    <div class="mb-2"><label>Categoría</label><input name="Categoria" class="form-control" /></div>
+                    <div class="mb-2"><label>Existencias</label><input name="Existencias" type="number" class="form-control" /></div>
+                    <div class="mb-2"><label>ImagenURL</label><input name="ImagenURL" class="form-control" /></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modalesContainer"></div>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
+    <script>
+        const baseUrl = '/Libro';
+
+        function recargarPagina() {
+            location.reload();
+        }
+
+        // Inicializar DataTables
+        $(document).ready(function () {
+            $('#tablaLibros').DataTable({
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excelHtml5', title: 'Libros' },
+                    { extend: 'pdfHtml5', title: 'Libros' }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                }
+            });
+        });
+
+        // Crear libro
+        $(document).on('submit', '#formCrear', function (e) {
+            e.preventDefault();
+            let formData = Object.fromEntries(new FormData(e.target));
+            const token = $('#formCrear input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: `${baseUrl}/CreateLibro`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                headers: { 'RequestVerificationToken': token },
+                success: () => recargarPagina()
+            });
+        });
+
+        // Ver detalles
+        $(document).on('click', '.ver-libro', function () {
+            const id = $(this).data('id');
+            $.get(`${baseUrl}/DetailsJson/${id}`, function (data) {
+                let modal = `
+                <div class="modal fade" id="modalVer" tabindex="-1">
+                    <div class="modal-dialog"><div class="modal-content">
+                        <div class="modal-header"><h5 class="modal-title">Detalles del Libro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Título:</strong> ${data.titulo}</p>
+                            <p><strong>Autor:</strong> ${data.autor}</p>
+                            <p><strong>Editorial:</strong> ${data.editorial}</p>
+                            <p><strong>ISBN:</strong> ${data.isbn}</p>
+                            <p><strong>Año:</strong> ${data.anio}</p>
+                            <p><strong>Categoría:</strong> ${data.categoria}</p>
+                            <p><strong>Existencias:</strong> ${data.existencias}</p>
+                        </div>
+                    </div></div>
+                </div>`;
+                $('#modalesContainer').html(modal);
+                new bootstrap.Modal(document.getElementById('modalVer')).show();
+            });
+        });
+
+        // Editar libro
+        $(document).on('click', '.editar-libro', function () {
+            const id = $(this).data('id');
+            $.get(`${baseUrl}/DetailsJson/${id}`, function (data) {
+                let tokenField = $('input[name="__RequestVerificationToken"]').first().clone();
+
+                let modal = `
+                <div class="modal fade" id="modalEditar" tabindex="-1">
+                    <div class="modal-dialog"><div class="modal-content">
+                        <form id="formEditar">
+                        ${tokenField[0].outerHTML}
+                        <div class="modal-header"><h5 class="modal-title">Editar Libro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="Id" value="${data.id}" />
+                            <div class="mb-2"><label>Título</label><input name="Titulo" class="form-control" value="${data.titulo}" /></div>
+                            <div class="mb-2"><label>Autor</label><input name="Autor" class="form-control" value="${data.autor}" /></div>
+                            <div class="mb-2"><label>Editorial</label><input name="Editorial" class="form-control" value="${data.editorial}" /></div>
+                            <div class="mb-2"><label>ISBN</label><input name="ISBN" class="form-control" value="${data.isbn}" /></div>
+                            <div class="mb-2"><label>Año</label><input name="Anio" type="number" class="form-control" value="${data.anio}" /></div>
+                            <div class="mb-2"><label>Categoría</label><input name="Categoria" class="form-control" value="${data.categoria}" /></div>
+                            <div class="mb-2"><label>Existencias</label><input name="Existencias" type="number" class="form-control" value="${data.existencias}" /></div>
+                            <div class="mb-2"><label>ImagenURL</label><input name="ImagenURL" class="form-control" value="${data.imagenURL}" /></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                        </form>
+                    </div></div>
+                </div>`;
+                $('#modalesContainer').html(modal);
+                new bootstrap.Modal(document.getElementById('modalEditar')).show();
+            });
+        });
+
+        $(document).on('submit', '#formEditar', function (e) {
+            e.preventDefault();
+            let formData = Object.fromEntries(new FormData(e.target));
+            const token = $('#formEditar input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: `${baseUrl}/EditJson`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                headers: { 'RequestVerificationToken': token },
+                success: () => recargarPagina()
+            });
+        });
+
+        // Eliminar libro
+        $(document).on('click', '.eliminar-libro', function () {
+            const id = $(this).data('id');
+            const token = $('input[name="__RequestVerificationToken"]').val();
+
+            if (confirm("¿Estás seguro de eliminar este libro?")) {
+                $.ajax({
+                    url: `${baseUrl}/DeleteJson`,
+                    method: 'POST',
+                    data: { id: id },
+                    headers: { 'RequestVerificationToken': token },
+                    success: () => recargarPagina()
+                });
+            }
+        });
+    </script>
+}

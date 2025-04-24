@@ -30,14 +30,21 @@ namespace BiblioApp.Controllers
             return JsonConvert.DeserializeObject<List<Libro>>(json);
         }
 
-        public async Task<Libro> GetLibroByIdAsync(int id)
-        {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/Libro/{id}");
-            response.EnsureSuccessStatusCode();
+       public async Task<Libro> GetLibroByIdAsync(int id)
+{
+    var response = await _httpClient.GetAsync($"{_baseUrl}/Libro/{id}");
 
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Libro>(content);
-        }
+    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+    {
+        return null;
+    }
+
+    response.EnsureSuccessStatusCode();
+
+    var content = await response.Content.ReadAsStringAsync();
+    return JsonConvert.DeserializeObject<Libro>(content);
+}
+
 
         public async Task<Libro> CreateLibroAsync(Libro libro)
         {
